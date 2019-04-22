@@ -1,4 +1,5 @@
 from tkinter import *
+import tkinter.font as tkFont
 import math as m
 import matplotlib.pyplot as pl
 
@@ -19,7 +20,7 @@ class Pendule(object):
         self.menu_bar.add_cascade(label="Fichier", menu=self.file_menu)
         self.file_menu.add_command(label="Quitter", command=self.fenetre.destroy)
         self.menu_bar.add_cascade(label="Aide", menu=self.help_menu)
-        self.help_menu.add_command(label="A propos", command=self.test)
+        self.help_menu.add_command(label="A propos", command=self.about)
         
         self.t0=t0
         self.tn=tn
@@ -99,12 +100,20 @@ class Pendule(object):
             self.i+=1
             self.can.after(5, self.move)
             
-    def test(self):
+    def about(self):
         self.fenetre_about=Tk()
         self.fenetre_about.title('A propos')
-        
+        self.fenetre_about.geometry('250x150')
+        self.fenetre_about.resizable(width=False, height=False)
+        font=tkFont.Font(size=15)
+        Label(self.fenetre_about, text='Développé avec amour\npar Marc-Antoine GODDE', font=font).pack(padx=5, pady=10)
+        Label(self.fenetre_about, text='Copyright © 2019').pack(padx=5, pady=5)
+        self.bouton_ok=Button(self.fenetre_about, text='Ok', command=self.fenetre_about.destroy)
+        self.bouton_ok.pack(padx=5, pady=5)
+
+       
                 
 if __name__ == "__main__": 
  
-    pendule = Pendule(0,10000,m.pi/2,0,0,0,3,3,4,4,5,1000000)
+    pendule = Pendule(0,10000,m.pi/2,0,0,0,3,3,4,4,5,100000)
     pendule.pendule()
