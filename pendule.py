@@ -23,21 +23,29 @@ class Pendule(object):
         self.n=n
         self.i=1
 
+    def home(self):
+        "Fenêtre de configuration"
+        self.fenetre_home=Tk()
+        self.fenetre_home.title('Configuration')
+        self.fenetre_home.geometry('700x300')
+        self.fenetre_home.resizable(width=False, height=False)
+
+
     def pendule(self):
         "Méthode définissant le pendule"
 
-        self.fenetre = Tk()  #Définition de la fenêtre et du canvas
-        self.fenetre.title('Pendule double')        
-        self.can = Canvas(self.fenetre, width = 500, height = 500, bg='grey', highlightthickness=0)
+        self.fenetre_pendule=Tk()  #Définition de la fenêtre et du canvas
+        self.fenetre_pendule.title('Pendule double')        
+        self.can = Canvas(self.fenetre_pendule, width = 500, height = 500, bg='grey', highlightthickness=0)
         self.can.pack()
         
-        self.menu_bar=Menu(self.fenetre)  #Création des menus
-        self.fenetre.config(menu=self.menu_bar)
+        self.menu_bar=Menu(self.fenetre_pendule)  #Création des menus
+        self.fenetre_pendule.config(menu=self.menu_bar)
         self.file_menu=Menu(self.menu_bar, tearoff=0)
         self.help_menu=Menu(self.menu_bar, tearoff=0)
         self.menu_bar.add_cascade(label="Fichier", menu=self.file_menu)
-        self.file_menu.add_command(label="Nouveau")
-        self.file_menu.add_command(label="Quitter", command=self.fenetre.quit)
+        self.file_menu.add_command(label="Nouveau", command=self.home)
+        self.file_menu.add_command(label="Quitter", command=self.fenetre_pendule.quit)
         self.menu_bar.add_cascade(label="Aide", menu=self.help_menu)
         self.help_menu.add_command(label="À propos", command=self.about)
 
@@ -57,7 +65,7 @@ class Pendule(object):
 
         self.move()  #Appel de la méthode d'animation
      
-        self.fenetre.mainloop() 
+        self.fenetre_pendule.mainloop() 
         
     def resolution(self,t0,tn,u10,u20,v10,v20,m1,m2,l1,l2,g,n):
         "Méthode permettant la résolution des équations différentielles"
@@ -122,7 +130,7 @@ class Pendule(object):
         self.bouton_ok=Button(self.fenetre_about, text='Ok', command=self.fenetre_about.destroy)
         self.bouton_ok.pack(padx=5, pady=5)
 
-       
+
                 
 if __name__ == "__main__": 
  
