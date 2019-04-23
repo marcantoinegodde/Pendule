@@ -18,9 +18,10 @@ class Pendule(object):
         self.file_menu=Menu(self.menu_bar, tearoff=0)
         self.help_menu=Menu(self.menu_bar, tearoff=0)
         self.menu_bar.add_cascade(label="Fichier", menu=self.file_menu)
-        self.file_menu.add_command(label="Quitter", command=self.fenetre.destroy)
+        self.file_menu.add_command(label="Nouveau")
+        self.file_menu.add_command(label="Quitter", command=self.fenetre.quit)
         self.menu_bar.add_cascade(label="Aide", menu=self.help_menu)
-        self.help_menu.add_command(label="A propos", command=self.about)
+        self.help_menu.add_command(label="À propos", command=self.about)
         
         self.t0=t0
         self.tn=tn
@@ -102,7 +103,7 @@ class Pendule(object):
             
     def about(self):
         self.fenetre_about=Tk()
-        self.fenetre_about.title('A propos')
+        self.fenetre_about.title('À propos')
         self.fenetre_about.geometry('250x150')
         self.fenetre_about.resizable(width=False, height=False)
         font=tkFont.Font(size=15)
