@@ -4,25 +4,11 @@ import math as m
 import matplotlib.pyplot as pl
 
 class Pendule(object):
-    "Instanciation de l'objet 'pendule'"
+    "Instanciation de l'objet pendule"
    
     def __init__(self, t0, tn, u10, u20, v10, v20, m1, m2, l1, l2, g, n):
         "Constructeur de la classe pendule"
-        self.fenetre = Tk()
-        self.fenetre.title('Pendule double')
-        
-        self.can = Canvas(self.fenetre, width = 500, height = 500, bg='grey', highlightthickness=0)
-        self.can.pack()
-        self.menu_bar=Menu(self.fenetre)
-        self.fenetre.config(menu=self.menu_bar)
-        self.file_menu=Menu(self.menu_bar, tearoff=0)
-        self.help_menu=Menu(self.menu_bar, tearoff=0)
-        self.menu_bar.add_cascade(label="Fichier", menu=self.file_menu)
-        self.file_menu.add_command(label="Nouveau")
-        self.file_menu.add_command(label="Quitter", command=self.fenetre.quit)
-        self.menu_bar.add_cascade(label="Aide", menu=self.help_menu)
-        self.help_menu.add_command(label="À propos", command=self.about)
-        
+
         self.t0=t0
         self.tn=tn
         self.u10=u10
@@ -37,27 +23,45 @@ class Pendule(object):
         self.n=n
         self.i=1
 
-        
     def pendule(self):
-        (self.T,self.U1,self.U2,self.V1,self.V2)=self.resolution(self.t0,self.tn,self.u10,self.u20,self.v10,self.v20,self.m1,self.m2,self.l1,self.l2,self.g,self.n)
+        "Méthode définissant le pendule"
+
+        self.fenetre = Tk()  #Définition de la fenêtre et du canvas
+        self.fenetre.title('Pendule double')        
+        self.can = Canvas(self.fenetre, width = 500, height = 500, bg='grey', highlightthickness=0)
+        self.can.pack()
+        
+        self.menu_bar=Menu(self.fenetre)  #Création des menus
+        self.fenetre.config(menu=self.menu_bar)
+        self.file_menu=Menu(self.menu_bar, tearoff=0)
+        self.help_menu=Menu(self.menu_bar, tearoff=0)
+        self.menu_bar.add_cascade(label="Fichier", menu=self.file_menu)
+        self.file_menu.add_command(label="Nouveau")
+        self.file_menu.add_command(label="Quitter", command=self.fenetre.quit)
+        self.menu_bar.add_cascade(label="Aide", menu=self.help_menu)
+        self.help_menu.add_command(label="À propos", command=self.about)
+
+        (self.T,self.U1,self.U2,self.V1,self.V2)=self.resolution(self.t0,self.tn,self.u10,self.u20,self.v10,self.v20,self.m1,self.m2,self.l1,self.l2,self.g,self.n)  #Appel de la résolution
         self.COORD1=self.conversion(self.U1,100)
         self.COORD2=self.conversion(self.U2,100)
         
-        self.cx,self.cy=250,250
+        self.cx,self.cy=250,250 #Définition du système de coordonnées
         x1,y1=self.COORD1[0]
         x2,y2=self.COORD2[0]
         
-        self.bras1 = self.can.create_line(self.cx, self.cy, self.cx+x1, self.cy+y1, fill = 'blue', width = 3)
+        self.bras1 = self.can.create_line(self.cx, self.cy, self.cx+x1, self.cy+y1, fill = 'blue', width = 3)  #Création des objets du pendule
         self.bras2 = self.can.create_line(self.cx+x1, self.cy+y1, self.cx+x1+x2, self.cy+y1+y2, fill = 'green', width = 3)
         self.can.create_oval(self.cx-6,self.cy-6,self.cx+6,self.cy+6,fill='red')
         self.rond1 = self.can.create_oval(self.cx+x1-4, self.cy+y1-4, self.cx+x1+4, self.cy+y1+4, fill='black')
         self.rond2 = self.can.create_oval(self.cx+x1+x2-4, self.cy+y1+y2-4, self.cx+x1+x2+4, self.cy+y1+y2+4, fill='black')
 
-        self.move()
+        self.move()  #Appel de la méthode d'animation
      
         self.fenetre.mainloop() 
         
     def resolution(self,t0,tn,u10,u20,v10,v20,m1,m2,l1,l2,g,n):
+        "Méthode permettant la résolution des équations différentielles"
+
         pas=(tn-t0)/n
         T=[t0]
         U1=[u10]
@@ -84,6 +88,8 @@ class Pendule(object):
         
 
     def conversion(self,ANGLE,l):
+        "Méthode permettant de passer des coordonnées polaires à carthésiennes"
+
         COORD=[]
         for k in range(len(ANGLE)):
             COORD.append((l*m.sin(ANGLE[k]),l*m.cos(ANGLE[k])))
@@ -91,18 +97,22 @@ class Pendule(object):
         
         
     def move(self):
+        "Méthode permettant l'animation du pendule"
+
         if self.i<len(self.COORD1):
             x1,y1=self.COORD1[self.i]
             x2,y2=self.COORD2[self.i]
-            self.can.coords(self.bras1, self.cx, self.cy, self.cx+x1, self.cy+y1)
+            self.can.coords(self.bras1, self.cx, self.cy, self.cx+x1, self.cy+y1)  #Déplacement des objets
             self.can.coords(self.rond1, self.cx+x1-4, self.cy+y1-4, self.cx+x1+4, self.cy+y1+4)
             self.can.coords(self.bras2, self.cx+x1, self.cy+y1, self.cx+x1+x2, self.cy+y1+y2)
             self.can.coords(self.rond2, self.cx+x1+x2-4, self.cy+y1+y2-4, self.cx+x1+x2+4, self.cy+y1+y2+4)
             self.i+=1
-            self.can.after(5, self.move)
+            self.can.after(5, self.move)  #Répetition de la méthode
             
     def about(self):
-        self.fenetre_about=Tk()
+        "Fenêtre About"
+
+        self.fenetre_about=Tk() #Définition de la fenêtre
         self.fenetre_about.title('À propos')
         self.fenetre_about.geometry('250x150')
         self.fenetre_about.resizable(width=False, height=False)
@@ -116,5 +126,5 @@ class Pendule(object):
                 
 if __name__ == "__main__": 
  
-    pendule = Pendule(0,10000,m.pi/2,0,0,0,3,3,4,4,5,100000)
+    pendule = Pendule(0,10000,m.pi/2,0,0,0,3,3,4,4,5,1000000)
     pendule.pendule()
