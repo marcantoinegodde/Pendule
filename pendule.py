@@ -1,5 +1,6 @@
 from tkinter import *
 import tkinter.font as tkFont
+import tkinter
 import math as m
 import matplotlib.pyplot as pl
 
@@ -25,17 +26,20 @@ class Pendule(object):
 
     def home(self):
         "Fenêtre de configuration"
+
         self.fenetre_home=Tk()
-        self.fenetre_home.title('Configuration')
+        self.fenetre_home.title('Configuration') 
         self.fenetre_home.geometry('700x300')
         self.fenetre_home.resizable(width=False, height=False)
 
-
+        
     def pendule(self):
         "Méthode définissant le pendule"
 
         self.fenetre_pendule=Tk()  #Définition de la fenêtre et du canvas
-        self.fenetre_pendule.title('Pendule double')        
+        self.fenetre_pendule.title('Pendule double')
+        icon=tkinter.Image("photo", file='icons/pendule.gif')  #Fichier de l'icône
+        self.fenetre_pendule.call('wm', 'iconphoto', self.fenetre_pendule._w, icon)
         self.can = Canvas(self.fenetre_pendule, width = 500, height = 500, bg='grey', highlightthickness=0)
         self.can.pack()
         
