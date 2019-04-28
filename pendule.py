@@ -32,6 +32,8 @@ class Pendule(object):
         self.fenetre_home.geometry('700x300')
         self.fenetre_home.resizable(width=False, height=False)
 
+        #self.fenetre_home.mainloop()
+
         
     def pendule(self):
         "Méthode définissant le pendule"
@@ -48,7 +50,7 @@ class Pendule(object):
         self.file_menu=Menu(self.menu_bar, tearoff=0)
         self.help_menu=Menu(self.menu_bar, tearoff=0)
         self.menu_bar.add_cascade(label="Fichier", menu=self.file_menu)
-        self.file_menu.add_command(label="Nouveau", command=self.home)
+        self.file_menu.add_command(label="Nouveau", command=self.new)
         self.file_menu.add_command(label="Quitter", command=self.fenetre_pendule.quit)
         self.menu_bar.add_cascade(label="Aide", menu=self.help_menu)
         self.help_menu.add_command(label="À propos", command=self.about)
@@ -134,6 +136,11 @@ class Pendule(object):
         self.bouton_ok=Button(self.fenetre_about, text='Ok', command=self.fenetre_about.destroy)
         self.bouton_ok.pack(padx=5, pady=5)
 
+    def new(self):
+        "Double commande panneau configuration"
+
+        self.fenetre_pendule.quit()
+        self.home()
 
                 
 if __name__ == "__main__": 
