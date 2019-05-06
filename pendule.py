@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 from tkinter import *
 import tkinter.font as tkFont
 import tkinter
 import math as m
-import matplotlib.pyplot as pl
 
 class Pendule(object):
     "Instanciation de l'objet pendule"
@@ -33,17 +33,21 @@ class Pendule(object):
         self.fenetre_home.title('Configuration') 
         self.fenetre_home.geometry('700x300')
         self.fenetre_home.resizable(width=False, height=False)
+        icon=tkinter.Image("photo", file='icons/settings.gif')  #Fichier de l'icône
+        self.fenetre_home.tk.call('wm', 'iconphoto', self.fenetre_home._w, icon)
+        
+        self.bouton_start=Button(self.fenetre_home, text='Démarrer', command=self.start).pack(padx=5, pady=5)
 
-        #self.fenetre_home.mainloop()
+        self.fenetre_home.mainloop()
 
         
     def pendule(self):
         "Méthode définissant le pendule"
 
-        self.fenetre_pendule=Tk()  #Définition de la fenêtre et du canvas
+        self.fenetre_pendule=Toplevel()  #Définition de la fenêtre et du canvas
         self.fenetre_pendule.title('Pendule double')
         icon=tkinter.Image("photo", file='icons/pendule.gif')  #Fichier de l'icône
-        self.fenetre_pendule.call('wm', 'iconphoto', self.fenetre_pendule._w, icon)
+        self.fenetre_pendule.tk.call('wm', 'iconphoto', self.fenetre_pendule._w, icon)
         self.can = Canvas(self.fenetre_pendule, width = 500, height = 500, bg='grey', highlightthickness=0)
         self.can.pack()
         
@@ -73,7 +77,7 @@ class Pendule(object):
 
         self.move()  #Appel de la méthode d'animation
      
-        self.fenetre_pendule.mainloop() 
+        #self.fenetre_pendule.mainloop() 
         
     def resolution(self,t0,tn,u10,u20,v10,v20,m1,m2,l1,l2,g,n):
         "Méthode permettant la résolution des équations différentielles"
@@ -131,10 +135,12 @@ class Pendule(object):
         self.fenetre_about=Toplevel() #Définition de la fenêtre
         self.fenetre_about.title('À propos')
         self.fenetre_about.geometry('250x150')
+        icon=tkinter.Image("photo", file='icons/about.gif')  #Fichier de l'icône
+        self.fenetre_about.tk.call('wm', 'iconphoto', self.fenetre_about._w, icon)
         self.fenetre_about.resizable(width=False, height=False)
         self.fenetre_about.transient(self.fenetre_pendule)
         self.fenetre_about.grab_set()
-        font=tkFont.Font(size=15)
+        font=tkFont.Font(size=13)
         Label(self.fenetre_about, text='Développé avec amour\npar Marc-Antoine GODDE', font=font).pack(padx=5, pady=10)
         Label(self.fenetre_about, text='Copyright © 2019').pack(padx=5, pady=5)
         self.bouton_ok=Button(self.fenetre_about, text='Ok', command=self.fenetre_about.destroy).pack(padx=5, pady=5)
@@ -142,11 +148,17 @@ class Pendule(object):
     def new(self):
         "Double commande panneau configuration"
 
-        self.fenetre_pendule.quit()
-        self.home()
+        self.fenetre_pendule.destroy()
+        self.fenetre_home.deiconify()
+        
+    def start(self):
+        #Double commande démarrage"
+        
+        self.fenetre_home.withdraw()
+        self.pendule()
 
                 
 if __name__ == "__main__": 
  
     pendule = Pendule(0,10000,m.pi/2,0,0,0,3,3,4,4,5,1000000)
-    pendule.pendule()
+    pendule.home()
