@@ -126,15 +126,16 @@ class Pendule(object):
     def about(self):
         "Fenêtre About"
 
-        self.fenetre_about=Tk() #Définition de la fenêtre
+        self.fenetre_about=Toplevel() #Définition de la fenêtre
         self.fenetre_about.title('À propos')
         self.fenetre_about.geometry('250x150')
         self.fenetre_about.resizable(width=False, height=False)
+        self.fenetre_about.transient(self.fenetre_pendule)
+        self.fenetre_about.grab_set()
         font=tkFont.Font(size=15)
         Label(self.fenetre_about, text='Développé avec amour\npar Marc-Antoine GODDE', font=font).pack(padx=5, pady=10)
         Label(self.fenetre_about, text='Copyright © 2019').pack(padx=5, pady=5)
-        self.bouton_ok=Button(self.fenetre_about, text='Ok', command=self.fenetre_about.destroy)
-        self.bouton_ok.pack(padx=5, pady=5)
+        self.bouton_ok=Button(self.fenetre_about, text='Ok', command=self.fenetre_about.destroy).pack(padx=5, pady=5)
 
     def new(self):
         "Double commande panneau configuration"
