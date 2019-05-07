@@ -36,7 +36,17 @@ class Pendule(object):
         icon=tkinter.Image("photo", file='icons/settings.gif')  #Fichier de l'icône
         self.fenetre_home.tk.call('wm', 'iconphoto', self.fenetre_home._w, icon)
         
-        self.bouton_start=Button(self.fenetre_home, text='Démarrer', command=self.start).pack(padx=5, pady=5)
+        icon_start=PhotoImage(file='icons/start.gif')
+        self.bouton_start=Button(self.fenetre_home, text="Démarrer", image=icon_start, compound="left", command=self.start).pack(padx=5, pady=5)
+
+        icon_quit=PhotoImage(file='icons/quit.gif')
+        self.bouton_quit=Button(self.fenetre_home, text="Quitter", image=icon_quit, compound="left", command=self.fenetre_home.destroy).pack(padx=5, pady=5)
+
+        icon_reset=PhotoImage(file='icons/recycle.gif')
+        self.bouton_reset=Button(self.fenetre_home, text="Réinitialiser", image=icon_reset, compound="left").pack(padx=5, pady=5)
+
+
+
 
         self.fenetre_home.mainloop()
 
@@ -57,7 +67,7 @@ class Pendule(object):
         self.help_menu=Menu(self.menu_bar, tearoff=0)
         self.menu_bar.add_cascade(label="Fichier", menu=self.file_menu)
         self.file_menu.add_command(label="Nouveau", command=self.new)
-        self.file_menu.add_command(label="Quitter", command=self.fenetre_pendule.quit)
+        self.file_menu.add_command(label="Quitter", command=self.fenetre_home.destroy)
         self.menu_bar.add_cascade(label="Aide", menu=self.help_menu)
         self.help_menu.add_command(label="À propos", command=self.about)
 
@@ -152,7 +162,7 @@ class Pendule(object):
         self.fenetre_home.deiconify()
         
     def start(self):
-        #Double commande démarrage"
+        "Double commande démarrage"
         
         self.fenetre_home.withdraw()
         self.pendule()
@@ -160,5 +170,5 @@ class Pendule(object):
                 
 if __name__ == "__main__": 
  
-    pendule = Pendule(0,10000,m.pi/2,0,0,0,3,3,4,4,5,1000000)
+    pendule = Pendule(0,10000,m.pi+0.01,0,0,0,3,3,4,4,5,1000000)
     pendule.home()
