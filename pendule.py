@@ -8,7 +8,7 @@ import math as m
 
 class Pendule(object):
     "Instanciation de l'objet pendule"
-   
+
     def __init__(self, t0, tn, u10, u20, v10, v20, m1, m2, l1, l2, g, n):
         "Constructeur de la classe pendule"
 
@@ -30,27 +30,28 @@ class Pendule(object):
         "Fenêtre de configuration"
 
         self.fenetre_home=Tk()
-        self.fenetre_home.title('Configuration') 
+        self.fenetre_home.title('Configuration')
         self.fenetre_home.geometry('700x300')
         self.fenetre_home.resizable(width=False, height=False)
         icon=tkinter.Image("photo", file='icons/settings.gif')  #Fichier de l'icône
         self.fenetre_home.tk.call('wm', 'iconphoto', self.fenetre_home._w, icon)
-        
+
+        self.FrameRoot=LabelFrame(self.fenetre_home, borderwidth=3).grid(row=0, column=0, padx=0, pady=0)
+        self.ButtonFrame=LabelFrame(self.FrameRoot, borderwidth=2, padx=10, pady=10).grid(row=0, column=0, padx=0, pady=0)
+
         icon_start=PhotoImage(file='icons/start.gif')
-        self.bouton_start=Button(self.fenetre_home, text="Démarrer", image=icon_start, compound="left", command=self.start).pack(padx=5, pady=5)
-
+        self.bouton_start=Button(self.ButtonFrame, text="Démarrer", image=icon_start, compound="left", command=self.start, height=30, width=110).grid(row=0, column=0, padx=5, pady=5)
         icon_quit=PhotoImage(file='icons/quit.gif')
-        self.bouton_quit=Button(self.fenetre_home, text="Quitter", image=icon_quit, compound="left", command=self.fenetre_home.destroy).pack(padx=5, pady=5)
-
+        self.bouton_quit=Button(self.ButtonFrame, text="Quitter", image=icon_quit, compound="left", command=self.fenetre_home.destroy, height=30, width=110).grid(row=1, column=0, padx=5, pady=5)
         icon_reset=PhotoImage(file='icons/recycle.gif')
-        self.bouton_reset=Button(self.fenetre_home, text="Réinitialiser", image=icon_reset, compound="left").pack(padx=5, pady=5)
+        self.bouton_reset=Button(self.ButtonFrame, text="Réinitialiser", image=icon_reset, compound="left", height=30, width=110).grid(row=2, column=0, padx=5, pady=5)
 
 
 
 
         self.fenetre_home.mainloop()
 
-        
+
     def pendule(self):
         "Méthode définissant le pendule"
 
@@ -60,7 +61,7 @@ class Pendule(object):
         self.fenetre_pendule.tk.call('wm', 'iconphoto', self.fenetre_pendule._w, icon)
         self.can = Canvas(self.fenetre_pendule, width = 500, height = 500, bg='grey', highlightthickness=0)
         self.can.pack()
-        
+
         self.menu_bar=Menu(self.fenetre_pendule)  #Création des menus
         self.fenetre_pendule.config(menu=self.menu_bar)
         self.file_menu=Menu(self.menu_bar, tearoff=0)
@@ -74,11 +75,11 @@ class Pendule(object):
         (self.T,self.U1,self.U2,self.V1,self.V2)=self.resolution(self.t0,self.tn,self.u10,self.u20,self.v10,self.v20,self.m1,self.m2,self.l1,self.l2,self.g,self.n)  #Appel de la résolution
         self.COORD1=self.conversion(self.U1,100)
         self.COORD2=self.conversion(self.U2,100)
-        
+
         self.cx,self.cy=250,250 #Définition du système de coordonnées
         x1,y1=self.COORD1[0]
         x2,y2=self.COORD2[0]
-        
+
         self.bras1 = self.can.create_line(self.cx, self.cy, self.cx+x1, self.cy+y1, fill = 'blue', width = 3)  #Création des objets du pendule
         self.bras2 = self.can.create_line(self.cx+x1, self.cy+y1, self.cx+x1+x2, self.cy+y1+y2, fill = 'green', width = 3)
         self.can.create_oval(self.cx-6,self.cy-6,self.cx+6,self.cy+6,fill='red')
@@ -86,9 +87,9 @@ class Pendule(object):
         self.rond2 = self.can.create_oval(self.cx+x1+x2-4, self.cy+y1+y2-4, self.cx+x1+x2+4, self.cy+y1+y2+4, fill='black')
 
         self.move()  #Appel de la méthode d'animation
-     
+
         #self.fenetre_pendule.mainloop() 
-        
+
     def resolution(self,t0,tn,u10,u20,v10,v20,m1,m2,l1,l2,g,n):
         "Méthode permettant la résolution des équations différentielles"
 
@@ -115,7 +116,7 @@ class Pendule(object):
             v10=v11
             v20=v21
         return (T,U1,U2,V1,V2)
-        
+
 
     def conversion(self,ANGLE,l):
         "Méthode permettant de passer des coordonnées polaires à carthésiennes"
@@ -124,8 +125,8 @@ class Pendule(object):
         for k in range(len(ANGLE)):
             COORD.append((l*m.sin(ANGLE[k]),l*m.cos(ANGLE[k])))
         return COORD
-        
-        
+
+
     def move(self):
         "Méthode permettant l'animation du pendule"
 
@@ -138,7 +139,7 @@ class Pendule(object):
             self.can.coords(self.rond2, self.cx+x1+x2-4, self.cy+y1+y2-4, self.cx+x1+x2+4, self.cy+y1+y2+4)
             self.i+=1
             self.can.after(5, self.move)  #Répetition de la méthode
-            
+
     def about(self):
         "Fenêtre About"
 
@@ -160,15 +161,15 @@ class Pendule(object):
 
         self.fenetre_pendule.destroy()
         self.fenetre_home.deiconify()
-        
+
     def start(self):
         "Double commande démarrage"
-        
+
         self.fenetre_home.withdraw()
         self.pendule()
 
-                
-if __name__ == "__main__": 
- 
+
+if __name__ == "__main__":
+
     pendule = Pendule(0,10000,m.pi+0.01,0,0,0,3,3,4,4,5,1000000)
     pendule.home()
