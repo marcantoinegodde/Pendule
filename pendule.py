@@ -37,14 +37,20 @@ class Pendule(object):
         self.fenetre_home.tk.call('wm', 'iconphoto', self.fenetre_home._w, icon)
 
         self.ButtonFrame=LabelFrame(self.fenetre_home, text='Actions')
-        self.ButtonFrame.place(bordermode=OUTSIDE, x=195, y=10, height=180, width=155)
+        self.ButtonFrame.place(bordermode=OUTSIDE, x=360, y=10, height=180, width=155)
         self.TimeFrame=LabelFrame(self.fenetre_home, text='Temps')
-        self.TimeFrame.place(bordermode=OUTSIDE, x=10, y=10, height=75, width=175) 
+        self.TimeFrame.place(bordermode=OUTSIDE, x=10, y=10, height=75, width=175)
         self.InitValuesFrame=LabelFrame(self.fenetre_home, text='Conditions Inititales')
         self.InitValuesFrame.place(bordermode=OUTSIDE, x=10, y=95, height=120, width=175)
+        self.WeightFrame=LabelFrame(self.fenetre_home, text='Masses')
+        self.WeightFrame.place(bordermode=OUTSIDE, x=195, y=10, height=75, width=150)
+        self.LengthFrame=LabelFrame(self.fenetre_home, text='Longueurs')
+        self.LengthFrame.place(bordermode=OUTSIDE, x=195, y=95, height=75, width=150)
 
         self.TimeFrame.grid_columnconfigure(0, minsize=5)
         self.InitValuesFrame.grid_columnconfigure(0, minsize=5)
+        self.WeightFrame.grid_columnconfigure(0, minsize=5)
+        self.LengthFrame.grid_columnconfigure(0, minsize=5)
 
         icon_start=PhotoImage(file='icons/start.gif')
         self.bouton_start=Button(self.ButtonFrame, text="Démarrer", image=icon_start, compound="left", command=self.start, height=30, width=110)
@@ -82,6 +88,25 @@ class Pendule(object):
         self.v10_ent.grid(row=2, column=2)
         self.v20_ent=Entry(self.InitValuesFrame, width=12)
         self.v20_ent.grid(row=3, column=2)
+
+        self.m1_txt=Label(self.WeightFrame, text ='Masse 1:')
+        self.m1_txt.grid(row=0, column=1)
+        self.m2_txt=Label(self.WeightFrame, text ='Masse 2:')
+        self.m2_txt.grid(row=1, column=1)
+        self.m1_ent=Entry(self.WeightFrame, width=7)
+        self.m1_ent.grid(row=0, column=2)
+        self.m2_ent=Entry(self.WeightFrame, width=7)
+        self.m2_ent.grid(row=1, column=2)
+
+        self.l1_txt=Label(self.LengthFrame, text ='Longueur 1:')
+        self.l1_txt.grid(row=0, column=1)
+        self.l2_txt=Label(self.LengthFrame, text ='Longueur 2:')
+        self.l2_txt.grid(row=1, column=1)
+        self.l1_ent=Entry(self.LengthFrame, width=5)
+        self.l1_ent.grid(row=0, column=2)
+        self.l2_ent=Entry(self.LengthFrame, width=5)
+        self.l2_ent.grid(row=1, column=2)
+
 
 
         self.fenetre_home.mainloop()
