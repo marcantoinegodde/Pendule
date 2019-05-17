@@ -36,16 +36,18 @@ class Pendule(object):
         icon=tkinter.Image("photo", file='icons/settings.gif')  #Fichier de l'icône
         self.fenetre_home.tk.call('wm', 'iconphoto', self.fenetre_home._w, icon)
 
-        self.FrameRoot=LabelFrame(self.fenetre_home, borderwidth=3).grid(row=0, column=0, padx=0, pady=0)
-        self.ButtonFrame=LabelFrame(self.FrameRoot, borderwidth=2, padx=10, pady=10).grid(row=0, column=0, padx=0, pady=0)
+        self.ButtonFrame=LabelFrame(self.fenetre_home, text='Actions')
+        self.ButtonFrame.grid(row=0, column=0, padx=10, pady=10)
 
         icon_start=PhotoImage(file='icons/start.gif')
-        self.bouton_start=Button(self.ButtonFrame, text="Démarrer", image=icon_start, compound="left", command=self.start, height=30, width=110).grid(row=0, column=0, padx=5, pady=5)
-        icon_quit=PhotoImage(file='icons/quit.gif')
-        self.bouton_quit=Button(self.ButtonFrame, text="Quitter", image=icon_quit, compound="left", command=self.fenetre_home.destroy, height=30, width=110).grid(row=1, column=0, padx=5, pady=5)
+        self.bouton_start=Button(self.ButtonFrame, text="Démarrer", image=icon_start, compound="left", command=self.start, height=30, width=110)
+        self.bouton_start.grid(row=0, column=0, padx=5, pady=5)
         icon_reset=PhotoImage(file='icons/recycle.gif')
-        self.bouton_reset=Button(self.ButtonFrame, text="Réinitialiser", image=icon_reset, compound="left", height=30, width=110).grid(row=2, column=0, padx=5, pady=5)
-
+        self.bouton_reset=Button(self.ButtonFrame, text="Réinitialiser", image=icon_reset, compound="left", height=30, width=110)
+        self.bouton_reset.grid(row=1, column=0, padx=5, pady=0)
+        icon_quit=PhotoImage(file='icons/quit.gif')
+        self.bouton_quit=Button(self.ButtonFrame, text="Quitter", image=icon_quit, compound="left", command=self.fenetre_home.destroy, height=30, width=110)
+        self.bouton_quit.grid(row=2, column=0, padx=5, pady=5)
 
 
 
