@@ -37,7 +37,14 @@ class Pendule(object):
         self.fenetre_home.tk.call('wm', 'iconphoto', self.fenetre_home._w, icon)
 
         self.ButtonFrame=LabelFrame(self.fenetre_home, text='Actions')
-        self.ButtonFrame.grid(row=0, column=0, padx=10, pady=10)
+        self.ButtonFrame.grid(row=0, column=1, padx=10, pady=10)
+        self.TimeFrame=LabelFrame(self.fenetre_home, text='Temps')
+        self.TimeFrame.grid(row=0, column=0, padx=10, pady=10, ipadx=5, ipady=5, sticky='nsw')
+        self.InitValuesFrame=LabelFrame(self.fenetre_home, text='Conditions Inititales')
+        self.InitValuesFrame.grid(row=1, column=0)
+
+        self.InitValuesFrame.grid_columnconfigure(0, weight=1)
+        self.InitValuesFrame.grid_columnconfigure(3, weight=5)
 
         icon_start=PhotoImage(file='icons/start.gif')
         self.bouton_start=Button(self.ButtonFrame, text="Démarrer", image=icon_start, compound="left", command=self.start, height=30, width=110)
@@ -49,6 +56,32 @@ class Pendule(object):
         self.bouton_quit=Button(self.ButtonFrame, text="Quitter", image=icon_quit, compound="left", command=self.fenetre_home.destroy, height=30, width=110)
         self.bouton_quit.grid(row=2, column=0, padx=5, pady=5)
 
+
+        self.t0_txt=Label(self.TimeFrame, text ='Date initiale:')
+        self.t0_txt.grid(row=0, column=1)
+        self.tn_txt=Label(self.TimeFrame, text ='Date finale:')
+        self.tn_txt.grid(row=1, column=1)
+        self.t0_ent=Entry(self.TimeFrame, width=7)
+        self.t0_ent.grid(row=0, column=2)
+        self.tn_ent=Entry(self.TimeFrame, width=7)
+        self.tn_ent.grid(row=1, column=2)
+
+        self.u10_txt=Label(self.InitValuesFrame, text ='θ1(0):')
+        self.u10_txt.grid(row=0, column=1)
+        self.u20_txt=Label(self.InitValuesFrame, text ='θ2(0):')
+        self.u20_txt.grid(row=1, column=1)
+        self.u10_ent=Entry(self.InitValuesFrame, width=7)
+        self.u10_ent.grid(row=0, column=2)
+        self.u20_ent=Entry(self.InitValuesFrame, width=7)
+        self.u20_ent.grid(row=1, column=2)
+        self.v10_txt=Label(self.InitValuesFrame, text ='v1(0):')
+        self.v10_txt.grid(row=2, column=1)
+        self.v20_txt=Label(self.InitValuesFrame, text ='v2(0):')
+        self.v20_txt.grid(row=3, column=1)
+        self.v10_ent=Entry(self.InitValuesFrame, width=7)
+        self.v10_ent.grid(row=2, column=2)
+        self.v20_ent=Entry(self.InitValuesFrame, width=7)
+        self.v20_ent.grid(row=3, column=2)
 
 
         self.fenetre_home.mainloop()
