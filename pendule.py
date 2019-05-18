@@ -25,6 +25,7 @@ class Pendule(object):
         self.g=g
         self.n=n
         self.i=1
+        self.periode=int(((self.tn-self.t0)/self.n)*1E3)
 
     def home(self):
         "Fenêtre de configuration"
@@ -198,7 +199,7 @@ class Pendule(object):
             self.can.coords(self.bras2, self.cx+x1, self.cy+y1, self.cx+x1+x2, self.cy+y1+y2)
             self.can.coords(self.rond2, self.cx+x1+x2-4, self.cy+y1+y2-4, self.cx+x1+x2+4, self.cy+y1+y2+4)
             self.i+=1
-            self.can.after(5, self.move)  #Répetition de la méthode
+            self.can.after(self.periode, self.move)  #Répetition de la méthode
 
     def about(self):
         "Fenêtre About"
