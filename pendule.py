@@ -5,7 +5,9 @@ from tkinter import *
 from tkinter import ttk
 import tkinter.font as tkFont
 import tkinter
-import time
+import threading
+from multiprocessing import Queue, Process
+import queue
 import math as m
 
 class Pendule(object):
@@ -28,6 +30,15 @@ class Pendule(object):
         self.n=n
         self.i=1
         self.periode=int(((self.tn-self.t0)/self.n)*1E3)
+
+        self.T=[]
+        self.U1=[]
+        self.U2=[]
+        self.V1=[]
+        self.V2=[]
+
+        self.queue=Queue()
+ 
 
     def home(self):
         "Fenêtre de configuration"
@@ -132,43 +143,51 @@ class Pendule(object):
         self.progressbar.place(bordermode=OUTSIDE, x=10, y=260, height=20, width=505)
 
 
-
         self.fenetre_home.mainloop()
 
 
     def pendule(self):
         "Méthode définissant le pendule"
 
-        self.fenetre_pendule=Toplevel()  #Définition de la fenêtre et du canvas
-        self.fenetre_pendule.title('Pendule double')
-        icon=tkinter.Image("photo", file='icons/pendule.gif')  #Fichier de l'icône
-        self.fenetre_pendule.tk.call('wm', 'iconphoto', self.fenetre_pendule._w, icon)
-        self.can = Canvas(self.fenetre_pendule, width = 500, height = 500, bg='grey', highlightthickness=0)
-        self.can.pack()
+        if (self.thread.is_alive()):
+            self.fenetre_home.after(100, self.pendule)
+            return
 
-        self.menu_bar=Menu(self.fenetre_pendule)  #Création des menus
-        self.fenetre_pendule.config(menu=self.menu_bar)
-        self.file_menu=Menu(self.menu_bar, tearoff=0)
-        self.help_menu=Menu(self.menu_bar, tearoff=0)
-        self.menu_bar.add_cascade(label="Fichier", menu=self.file_menu)
-        self.file_menu.add_command(label="Nouveau", command=self.new)
-        self.file_menu.add_command(label="Quitter", command=self.fenetre_home.destroy)
-        self.menu_bar.add_cascade(label="Aide", menu=self.help_menu)
-        self.help_menu.add_command(label="À propos", command=self.about)
+        else:
+            self.fenetre_home.withdraw()
+            self.progressbar.stop()
 
-        self.cx,self.cy=250,250 #Définition du système de coordonnées
-        x1,y1=self.COORD1[0]
-        x2,y2=self.COORD2[0]
+            self.fenetre_pendule=Toplevel()  #Définition de la fenêtre et du canvas
+            self.fenetre_pendule.title('Pendule double')
+            icon=tkinter.Image("photo", file='icons/pendule.gif')  #Fichier de l'icône
+            self.fenetre_pendule.tk.call('wm', 'iconphoto', self.fenetre_pendule._w, icon)
+            self.can = Canvas(self.fenetre_pendule, width = 500, height = 500, bg='grey', highlightthickness=0)
+            self.can.pack()
 
-        self.bras1 = self.can.create_line(self.cx, self.cy, self.cx+x1, self.cy+y1, fill = 'blue', width = 3)  #Création des objets du pendule
-        self.bras2 = self.can.create_line(self.cx+x1, self.cy+y1, self.cx+x1+x2, self.cy+y1+y2, fill = 'green', width = 3)
-        self.can.create_oval(self.cx-6,self.cy-6,self.cx+6,self.cy+6,fill='red')
-        self.rond1 = self.can.create_oval(self.cx+x1-4, self.cy+y1-4, self.cx+x1+4, self.cy+y1+4, fill='black')
-        self.rond2 = self.can.create_oval(self.cx+x1+x2-4, self.cy+y1+y2-4, self.cx+x1+x2+4, self.cy+y1+y2+4, fill='black')
+            self.menu_bar=Menu(self.fenetre_pendule)  #Création des menus
+            self.fenetre_pendule.config(menu=self.menu_bar)
+            self.file_menu=Menu(self.menu_bar, tearoff=0)
+            self.help_menu=Menu(self.menu_bar, tearoff=0)
+            self.menu_bar.add_cascade(label="Fichier", menu=self.file_menu)
+            self.file_menu.add_command(label="Nouveau", command=self.new)
+            self.file_menu.add_command(label="Quitter", command=self.fenetre_home.destroy)
+            self.menu_bar.add_cascade(label="Aide", menu=self.help_menu)
+            self.help_menu.add_command(label="À propos", command=self.about)
 
-        self.move()  #Appel de la méthode d'animation
+            self.COORD1=self.conversion(self.U1,100)
+            self.COORD2=self.conversion(self.U2,100)
+ 
+            self.cx,self.cy=250,250 #Définition du système de coordonnées
+            x1,y1=self.COORD1[0]
+            x2,y2=self.COORD2[0]
 
-        #self.fenetre_pendule.mainloop() 
+            self.bras1 = self.can.create_line(self.cx, self.cy, self.cx+x1, self.cy+y1, fill = 'blue', width = 3)  #Création des objets du pendule
+            self.bras2 = self.can.create_line(self.cx+x1, self.cy+y1, self.cx+x1+x2, self.cy+y1+y2, fill = 'green', width = 3)
+            self.can.create_oval(self.cx-6,self.cy-6,self.cx+6,self.cy+6,fill='red')
+            self.rond1 = self.can.create_oval(self.cx+x1-4, self.cy+y1-4, self.cx+x1+4, self.cy+y1+4, fill='black')
+            self.rond2 = self.can.create_oval(self.cx+x1+x2-4, self.cy+y1+y2-4, self.cx+x1+x2+4, self.cy+y1+y2+4, fill='black')
+
+            self.move()  #Appel de la méthode d'animation
 
     def resolution(self,t0,tn,u10,u20,v10,v20,m1,m2,l1,l2,g,n):
         "Méthode permettant la résolution des équations différentielles"
@@ -185,19 +204,18 @@ class Pendule(object):
             u21=u20+pas*v20
             v11=v10+pas*((-g*(2*m1+m2)*m.sin(u10)-m2*g*m.sin(u10-2*u20)-2*m2*m.sin(u10-u20)*(l2*(v20)**2+l1*(v10)**2*m.cos(u10-u20)))/(l1*(2*m1+m2-m2*m.cos(2*u10-2*u20))))
             v21=v20+pas*(2*m.sin(u10-u20)*(l1*(m1+m2)*(v10)**2+g*(m1+m2)*m.cos(u10)+l2*m2*(v20)**2*m.cos(u10-u20))/(l2*(2*m1+m2-m2*m.cos(2*u10-2*u20))))
-            T.append(t1)
-            U1.append(u11)
-            U2.append(u21)
-            V1.append(v11)
-            V2.append(v21)
+            self.T.append(t1)
+            self.U1.append(u11)
+            self.U2.append(u21)
+            self.V1.append(v11)
+            self.V2.append(v21)
             t0=t1
             u10=u11
             u20=u21
             v10=v11
             v20=v21
-        return (T,U1,U2,V1,V2)
 
-
+            
     def conversion(self,ANGLE,l):
         "Méthode permettant de passer des coordonnées polaires à carthésiennes"
 
@@ -245,12 +263,10 @@ class Pendule(object):
     def start(self):
         "Double commande démarrage"
 
+        self.thread=threading.Thread(target=self.resolution, args=(self.t0,self.tn,self.u10,self.u20,self.v10,self.v20,self.m1,self.m2,self.l1,self.l2,self.g,self.n))
+        self.thread.start()
         self.progressbar.start()
-        (self.T,self.U1,self.U2,self.V1,self.V2)=self.resolution(self.t0,self.tn,self.u10,self.u20,self.v10,self.v20,self.m1,self.m2,self.l1,self.l2,self.g,self.n)  #Appel de la résolution
-        self.COORD1=self.conversion(self.U1,100)
-        self.COORD2=self.conversion(self.U2,100)
-        #self.fenetre_home.withdraw()
-        self.pendule()
+        self.fenetre_home.after(100, self.pendule)
 
 
 if __name__ == "__main__":
