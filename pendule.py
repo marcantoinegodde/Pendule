@@ -2,8 +2,10 @@
 # -*- coding: utf-8 -*-
 
 from tkinter import *
+from tkinter import ttk
 import tkinter.font as tkFont
 import tkinter
+import time
 import math as m
 
 class Pendule(object):
@@ -126,6 +128,8 @@ class Pendule(object):
         self.g_ent=Entry(self.ConstFrame, width=6)
         self.g_ent.grid(row=1, column=2)
 
+        self.progressbar=ttk.Progressbar(self.fenetre_home, orient="horizontal", length=300, mode="indeterminate")
+        self.progressbar.place(bordermode=OUTSIDE, x=10, y=260, height=20, width=505)
 
 
 
@@ -151,10 +155,6 @@ class Pendule(object):
         self.file_menu.add_command(label="Quitter", command=self.fenetre_home.destroy)
         self.menu_bar.add_cascade(label="Aide", menu=self.help_menu)
         self.help_menu.add_command(label="À propos", command=self.about)
-
-        (self.T,self.U1,self.U2,self.V1,self.V2)=self.resolution(self.t0,self.tn,self.u10,self.u20,self.v10,self.v20,self.m1,self.m2,self.l1,self.l2,self.g,self.n)  #Appel de la résolution
-        self.COORD1=self.conversion(self.U1,100)
-        self.COORD2=self.conversion(self.U2,100)
 
         self.cx,self.cy=250,250 #Définition du système de coordonnées
         x1,y1=self.COORD1[0]
@@ -245,7 +245,11 @@ class Pendule(object):
     def start(self):
         "Double commande démarrage"
 
-        self.fenetre_home.withdraw()
+        self.progressbar.start()
+        (self.T,self.U1,self.U2,self.V1,self.V2)=self.resolution(self.t0,self.tn,self.u10,self.u20,self.v10,self.v20,self.m1,self.m2,self.l1,self.l2,self.g,self.n)  #Appel de la résolution
+        self.COORD1=self.conversion(self.U1,100)
+        self.COORD2=self.conversion(self.U2,100)
+        #self.fenetre_home.withdraw()
         self.pendule()
 
 
