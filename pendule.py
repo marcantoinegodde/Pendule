@@ -6,8 +6,6 @@ from tkinter import ttk
 import tkinter.font as tkFont
 import tkinter
 import threading
-from multiprocessing import Queue, Process
-import queue
 import math as m
 
 class Pendule(object):
@@ -37,8 +35,6 @@ class Pendule(object):
         self.V1=[]
         self.V2=[]
 
-        self.queue=Queue()
- 
 
     def home(self):
         "Fenêtre de configuration"
@@ -186,6 +182,7 @@ class Pendule(object):
 
             self.move()  #Appel de la méthode d'animation
 
+
     def resolution(self,t0,tn,u10,u20,v10,v20,m1,m2,l1,l2,g,n):
         "Méthode permettant la résolution des équations différentielles"
 
@@ -214,7 +211,7 @@ class Pendule(object):
 
         self.COORD1=self.conversion(self.U1,100)
         self.COORD2=self.conversion(self.U2,100)
- 
+
 
     def conversion(self,ANGLE,l):
         "Méthode permettant de passer des coordonnées polaires à carthésiennes"
@@ -238,6 +235,7 @@ class Pendule(object):
             self.i+=1
             self.can.after(self.periode, self.move)  #Répetition de la méthode
 
+
     def about(self):
         "Fenêtre About"
 
@@ -254,11 +252,13 @@ class Pendule(object):
         Label(self.fenetre_about, text='Copyright © 2019').pack(padx=5, pady=5)
         self.bouton_ok=Button(self.fenetre_about, text='Ok', command=self.fenetre_about.destroy).pack(padx=5, pady=5)
 
+
     def new(self):
         "Double commande panneau configuration"
 
         self.fenetre_pendule.destroy()
         self.fenetre_home.deiconify()
+
 
     def start(self):
         "Double commande démarrage"
