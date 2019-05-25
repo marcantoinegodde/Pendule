@@ -150,7 +150,7 @@ class Pendule(object):
         "Méthode définissant le pendule"
 
         if (self.thread.is_alive()):
-            self.fenetre_home.after(100, self.pendule)
+            self.fenetre_home.after(200, self.pendule)
             return
 
         else:
@@ -174,9 +174,6 @@ class Pendule(object):
             self.menu_bar.add_cascade(label="Aide", menu=self.help_menu)
             self.help_menu.add_command(label="À propos", command=self.about)
 
-            self.COORD1=self.conversion(self.U1,100)
-            self.COORD2=self.conversion(self.U2,100)
- 
             self.cx,self.cy=250,250 #Définition du système de coordonnées
             x1,y1=self.COORD1[0]
             x2,y2=self.COORD2[0]
@@ -215,7 +212,10 @@ class Pendule(object):
             v10=v11
             v20=v21
 
-            
+        self.COORD1=self.conversion(self.U1,100)
+        self.COORD2=self.conversion(self.U2,100)
+ 
+
     def conversion(self,ANGLE,l):
         "Méthode permettant de passer des coordonnées polaires à carthésiennes"
 
@@ -263,10 +263,13 @@ class Pendule(object):
     def start(self):
         "Double commande démarrage"
 
+        self.bouton_start.config(state=DISABLED)
+        self.bouton_reset.config(state=DISABLED)
+        self.bouton_quit.config(state=DISABLED)
         self.thread=threading.Thread(target=self.resolution, args=(self.t0,self.tn,self.u10,self.u20,self.v10,self.v20,self.m1,self.m2,self.l1,self.l2,self.g,self.n))
         self.thread.start()
         self.progressbar.start()
-        self.fenetre_home.after(100, self.pendule)
+        self.fenetre_home.after(200, self.pendule)
 
 
 if __name__ == "__main__":
