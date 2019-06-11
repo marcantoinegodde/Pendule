@@ -27,7 +27,7 @@ class Pendule(object):
         self.g=9.81
         self.n=1000000
         self.i=1
-        self.periode=int(((self.tn-self.t0)/self.n)*1E3)
+        self.periode=int(((self.tn-self.t0)/self.n)*1E3) #Définition d'une période constante
 
         self.T=[]
         self.U1=[]
@@ -135,7 +135,7 @@ class Pendule(object):
         self.g_ent=Entry(self.ConstFrame, width=6)
         self.g_ent.grid(row=1, column=2)
 
-        self.t0_ent.insert(0, self.t0)
+        self.t0_ent.insert(0, self.t0) #Remplissage des entry
         self.tn_ent.insert(0, self.tn)
         self.u10_ent.insert(0, self.u10)
         self.u20_ent.insert(0, self.u20)
@@ -148,23 +148,23 @@ class Pendule(object):
         self.g_ent.insert(0, self.g)
         self.n_ent.insert(0, self.n)
 
-        self.progressbar=ttk.Progressbar(self.fenetre_home, orient="horizontal", length=300, mode="indeterminate")
+        self.progressbar=ttk.Progressbar(self.fenetre_home, orient="horizontal", length=300, mode="indeterminate") #Définition de la progressbar
         self.progressbar.place(bordermode=OUTSIDE, x=10, y=260, height=20, width=505)
 
 
-        self.fenetre_home.mainloop()
+        self.fenetre_home.mainloop() #Appel de la mainloop
 
 
     def pendule(self):
         "Méthode définissant le pendule"
 
-        if (self.thread.is_alive()):
+        if (self.thread.is_alive()): #Vérification de l'exécution de thread
             self.fenetre_home.after(200, self.pendule)
             return
 
         else:
-            self.fenetre_home.withdraw()
-            self.progressbar.stop()
+            self.fenetre_home.withdraw() #Cache fenêtre home
+            self.progressbar.stop() #Arrêt de prograssbar
 
             self.fenetre_pendule=Toplevel()  #Définition de la fenêtre et du canvas
             self.fenetre_pendule.title('Pendule double')
@@ -193,11 +193,13 @@ class Pendule(object):
             self.rond1 = self.can.create_oval(self.cx+x1-4, self.cy+y1-4, self.cx+x1+4, self.cy+y1+4, fill='black')
             self.rond2 = self.can.create_oval(self.cx+x1+x2-4, self.cy+y1+y2-4, self.cx+x1+x2+4, self.cy+y1+y2+4, fill='black')
 
+            #self.fenetre_pendule.protocol("WM_DELETE_WINDOW", self.fenetre_home.deiconify())
+
             self.move()  #Appel de la méthode d'animation
 
 
     def resolution(self,t0,tn,u10,u20,v10,v20,m1,m2,l1,l2,g,n):
-        "Méthode permettant la résolution des équations différentielles"
+        "Méthode permettant la résolution des équations différentielles (Euler explicite)"
 
         pas=(tn-t0)/n
         T=[t0]
@@ -230,7 +232,7 @@ class Pendule(object):
         "Méthode permettant de passer des coordonnées polaires à carthésiennes"
 
         COORD=[]
-        for k in range(len(ANGLE)):
+        for k in range(len(ANGLE)): #Projection dans le repère carthésien
             COORD.append((l*m.sin(ANGLE[k]),l*m.cos(ANGLE[k])))
         return COORD
 
@@ -266,33 +268,11 @@ class Pendule(object):
         self.bouton_ok=Button(self.fenetre_about, text='Ok', command=self.fenetre_about.destroy).pack(padx=5, pady=5)
 
 
-    def new(self):
-        "Double commande panneau configuration"
-
-        self.bouton_start.config(state=NORMAL)
-        self.bouton_reset.config(state=NORMAL)
-        self.bouton_quit.config(state=NORMAL)
-        self.t0_ent.config(state=NORMAL)
-        self.tn_ent.config(state=NORMAL)
-        self.u10_ent.config(state=NORMAL)
-        self.u20_ent.config(state=NORMAL)
-        self.v10_ent.config(state=NORMAL)
-        self.v20_ent.config(state=NORMAL)
-        self.m1_ent.config(state=NORMAL)
-        self.m2_ent.config(state=NORMAL)
-        self.l1_ent.config(state=NORMAL)
-        self.l2_ent.config(state=NORMAL)
-        self.g_ent.config(state=NORMAL)
-        self.n_ent.config(state=NORMAL)
-        self.fenetre_pendule.destroy()
-        self.fenetre_home.deiconify()
-
-
     def start(self):
         "Double commande démarrage"
 
-        self.settings()
-        self.bouton_start.config(state=DISABLED)
+        self.settings() #Récupérations des paramètres
+        self.bouton_start.config(state=DISABLED) #Désactivation de l'interface
         self.bouton_reset.config(state=DISABLED)
         self.bouton_quit.config(state=DISABLED)
         self.t0_ent.config(state=DISABLED)
@@ -310,9 +290,10 @@ class Pendule(object):
 
 
         self.thread=threading.Thread(target=self.resolution, args=(self.t0,self.tn,self.u10,self.u20,self.v10,self.v20,self.m1,self.m2,self.l1,self.l2,self.g,self.n))
-        self.thread.start()
-        self.progressbar.start()
-        self.fenetre_home.after(200, self.pendule)
+        self.thread.start() #Gestion de la résolution en parallèle
+        self.progressbar.start() #Démarrage de la progressbar
+        self.fenetre_home.after(200, self.pendule) #Appel de pendule
+
 
     def settings(self):
         "Récupération des paramètres"
@@ -330,6 +311,7 @@ class Pendule(object):
         self.g=float(self.g_ent.get())
         self.n=int(self.n_ent.get())
 
+ 
     def reset(self):
         "Réinitialisation des paramètres"
 
@@ -358,6 +340,28 @@ class Pendule(object):
         self.l2_ent.insert(0, 10)
         self.g_ent.insert(0, 9.81)
         self.n_ent.insert(0, 1000000)
+
+
+    def new(self):
+        "Double commande panneau configuration"
+
+        self.bouton_start.config(state=NORMAL) #Réactivation de l'interface
+        self.bouton_reset.config(state=NORMAL)
+        self.bouton_quit.config(state=NORMAL)
+        self.t0_ent.config(state=NORMAL)
+        self.tn_ent.config(state=NORMAL)
+        self.u10_ent.config(state=NORMAL)
+        self.u20_ent.config(state=NORMAL)
+        self.v10_ent.config(state=NORMAL)
+        self.v20_ent.config(state=NORMAL)
+        self.m1_ent.config(state=NORMAL)
+        self.m2_ent.config(state=NORMAL)
+        self.l1_ent.config(state=NORMAL)
+        self.l2_ent.config(state=NORMAL)
+        self.g_ent.config(state=NORMAL)
+        self.n_ent.config(state=NORMAL)
+        self.fenetre_pendule.destroy()
+        self.fenetre_home.deiconify()
 
 
 
