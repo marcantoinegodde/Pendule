@@ -9,23 +9,23 @@ import threading
 import math as m
 
 class Pendule(object):
-    "Instanciation de l'objet pendule"
+    "Définition de la classe de l'objet pendule"
 
-    def __init__(self, t0, tn, u10, u20, v10, v20, m1, m2, l1, l2, g, n):
+    def __init__(self):
         "Constructeur de la classe pendule"
 
-        self.t0=t0
-        self.tn=tn
-        self.u10=u10
-        self.u20=u20
-        self.v10=v10
-        self.v20=v20
-        self.m1=m1
-        self.m2=m2
-        self.l1=l1
-        self.l2=l2
-        self.g=g
-        self.n=n
+        self.t0=0
+        self.tn=10000
+        self.u10=1.55
+        self.u20=0
+        self.v10=1
+        self.v20=1
+        self.m1=10
+        self.m2=10
+        self.l1=10
+        self.l2=10
+        self.g=9.81
+        self.n=1000000
         self.i=1
         self.periode=int(((self.tn-self.t0)/self.n)*1E3)
 
@@ -74,7 +74,7 @@ class Pendule(object):
         self.bouton_start=Button(self.ButtonFrame, text="Démarrer", image=icon_start, compound="left", command=self.start, height=30, width=110)
         self.bouton_start.grid(row=0, column=0, padx=5, pady=5)
         icon_reset=PhotoImage(file='icons/recycle.gif')
-        self.bouton_reset=Button(self.ButtonFrame, text="Réinitialiser", image=icon_reset, compound="left", height=30, width=110)
+        self.bouton_reset=Button(self.ButtonFrame, text="Réinitialiser", image=icon_reset, compound="left", command=self.reset, height=30, width=110)
         self.bouton_reset.grid(row=1, column=0, padx=5, pady=0)
         icon_quit=PhotoImage(file='icons/quit.gif')
         self.bouton_quit=Button(self.ButtonFrame, text="Quitter", image=icon_quit, compound="left", command=self.fenetre_home.destroy, height=30, width=110)
@@ -134,6 +134,19 @@ class Pendule(object):
         self.g_txt.grid(row=1, column=1, sticky='w')
         self.g_ent=Entry(self.ConstFrame, width=6)
         self.g_ent.grid(row=1, column=2)
+
+        self.t0_ent.insert(0, self.t0)
+        self.tn_ent.insert(0, self.tn)
+        self.u10_ent.insert(0, self.u10)
+        self.u20_ent.insert(0, self.u20)
+        self.v10_ent.insert(0, self.v10)
+        self.v20_ent.insert(0, self.v20)
+        self.m1_ent.insert(0, self.m1)
+        self.m2_ent.insert(0, self.m2)
+        self.l1_ent.insert(0, self.l1)
+        self.l2_ent.insert(0, self.l2)
+        self.g_ent.insert(0, self.g)
+        self.n_ent.insert(0, self.n)
 
         self.progressbar=ttk.Progressbar(self.fenetre_home, orient="horizontal", length=300, mode="indeterminate")
         self.progressbar.place(bordermode=OUTSIDE, x=10, y=260, height=20, width=505)
@@ -256,6 +269,21 @@ class Pendule(object):
     def new(self):
         "Double commande panneau configuration"
 
+        self.bouton_start.config(state=NORMAL)
+        self.bouton_reset.config(state=NORMAL)
+        self.bouton_quit.config(state=NORMAL)
+        self.t0_ent.config(state=NORMAL)
+        self.tn_ent.config(state=NORMAL)
+        self.u10_ent.config(state=NORMAL)
+        self.u20_ent.config(state=NORMAL)
+        self.v10_ent.config(state=NORMAL)
+        self.v20_ent.config(state=NORMAL)
+        self.m1_ent.config(state=NORMAL)
+        self.m2_ent.config(state=NORMAL)
+        self.l1_ent.config(state=NORMAL)
+        self.l2_ent.config(state=NORMAL)
+        self.g_ent.config(state=NORMAL)
+        self.n_ent.config(state=NORMAL)
         self.fenetre_pendule.destroy()
         self.fenetre_home.deiconify()
 
@@ -263,16 +291,77 @@ class Pendule(object):
     def start(self):
         "Double commande démarrage"
 
+        self.settings()
         self.bouton_start.config(state=DISABLED)
         self.bouton_reset.config(state=DISABLED)
         self.bouton_quit.config(state=DISABLED)
+        self.t0_ent.config(state=DISABLED)
+        self.tn_ent.config(state=DISABLED)
+        self.u10_ent.config(state=DISABLED)
+        self.u20_ent.config(state=DISABLED)
+        self.v10_ent.config(state=DISABLED)
+        self.v20_ent.config(state=DISABLED)
+        self.m1_ent.config(state=DISABLED)
+        self.m2_ent.config(state=DISABLED)
+        self.l1_ent.config(state=DISABLED)
+        self.l2_ent.config(state=DISABLED)
+        self.g_ent.config(state=DISABLED)
+        self.n_ent.config(state=DISABLED)
+
+
         self.thread=threading.Thread(target=self.resolution, args=(self.t0,self.tn,self.u10,self.u20,self.v10,self.v20,self.m1,self.m2,self.l1,self.l2,self.g,self.n))
         self.thread.start()
         self.progressbar.start()
         self.fenetre_home.after(200, self.pendule)
 
+    def settings(self):
+        "Récupération des paramètres"
+
+        self.t0=int(self.t0_ent.get())
+        self.tn=int(self.tn_ent.get())
+        self.u10=float(self.u10_ent.get())
+        self.u20=float(self.u20_ent.get())
+        self.v10=float(self.v10_ent.get())
+        self.v20=float(self.v20_ent.get())
+        self.m1=float(self.m1_ent.get())
+        self.m2=float(self.m2_ent.get())
+        self.l1=float(self.l1_ent.get())
+        self.l2=float(self.l2_ent.get())
+        self.g=float(self.g_ent.get())
+        self.n=int(self.n_ent.get())
+
+    def reset(self):
+        "Réinitialisation des paramètres"
+
+        self.t0_ent.delete(0,END)
+        self.tn_ent.delete(0,END)
+        self.u10_ent.delete(0,END)
+        self.u20_ent.delete(0,END)
+        self.v10_ent.delete(0,END)
+        self.v20_ent.delete(0,END)
+        self.m1_ent.delete(0,END)
+        self.m2_ent.delete(0,END)
+        self.l1_ent.delete(0,END)
+        self.l2_ent.delete(0,END)
+        self.g_ent.delete(0,END)
+        self.n_ent.delete(0,END)
+
+        self.t0_ent.insert(0, 0)
+        self.tn_ent.insert(0, 10000)
+        self.u10_ent.insert(0, 1.55)
+        self.u20_ent.insert(0, 0)
+        self.v10_ent.insert(0, 1)
+        self.v20_ent.insert(0, 1)
+        self.m1_ent.insert(0, 10)
+        self.m2_ent.insert(0, 10)
+        self.l1_ent.insert(0, 10)
+        self.l2_ent.insert(0, 10)
+        self.g_ent.insert(0, 9.81)
+        self.n_ent.insert(0, 1000000)
+
+
 
 if __name__ == "__main__":
 
-    pendule = Pendule(0,10000,m.pi+0.01,0,0,0,3,3,4,4,5,1000000)
+    pendule = Pendule()
     pendule.home()
