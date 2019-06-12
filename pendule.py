@@ -26,8 +26,8 @@ class Pendule(object):
         self.l2=10
         self.g=9.81
         self.n=1000000
-        self.i=1
 
+        self.i=1
         self.T=[]
         self.U1=[]
         self.U2=[]
@@ -362,6 +362,13 @@ class Pendule(object):
         self.n_ent.config(state=NORMAL)
         self.fenetre_pendule.destroy()
         self.fenetre_home.deiconify()
+
+        self.i=1
+        self.T=[]
+        self.U1=[]
+        self.U2=[]
+        self.V1=[]
+        self.V2=[]
 
 
 
