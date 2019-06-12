@@ -27,7 +27,6 @@ class Pendule(object):
         self.g=9.81
         self.n=1000000
         self.i=1
-        self.periode=int(((self.tn-self.t0)/self.n)*1E3) #Définition d'une période constante
 
         self.T=[]
         self.U1=[]
@@ -272,6 +271,7 @@ class Pendule(object):
         "Double commande démarrage"
 
         self.settings() #Récupérations des paramètres
+        self.periode=int(((self.tn-self.t0)/self.n)*1E3) #Définition d'une période constante
         self.bouton_start.config(state=DISABLED) #Désactivation de l'interface
         self.bouton_reset.config(state=DISABLED)
         self.bouton_quit.config(state=DISABLED)
