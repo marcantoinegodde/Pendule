@@ -34,8 +34,6 @@ class Pendule(object):
         self.V1=[]
         self.V2=[]
 
-        self.flagoverflow=0
-
     def home(self):
         "Fenêtre de configuration"
 
@@ -201,34 +199,28 @@ class Pendule(object):
     def resolution(self,t0,tn,u10,u20,v10,v20,m1,m2,l1,l2,g,n):
         "Méthode permettant la résolution des équations différentielles (Euler explicite)"
 
-        try:
-            pas=(tn-t0)/n
-            T=[t0]
-            U1=[u10]
-            U2=[u20]
-            V1=[v10]
-            V2=[v20]
-            for k in range(n):
-                t1=t0+pas
-                u11=u10+pas*v10
-                u21=u20+pas*v20
-                v11=v10+pas*((-g*(2*m1+m2)*m.sin(u10)-m2*g*m.sin(u10-2*u20)-2*m2*m.sin(u10-u20)*(l2*(v20)**2+l1*(v10)**2*m.cos(u10-u20)))/(l1*(2*m1+m2-m2*m.cos(2*u10-2*u20))))
-                v21=v20+pas*(2*m.sin(u10-u20)*(l1*(m1+m2)*(v10)**2+g*(m1+m2)*m.cos(u10)+l2*m2*(v20)**2*m.cos(u10-u20))/(l2*(2*m1+m2-m2*m.cos(2*u10-2*u20))))
-                self.T.append(t1)
-                self.U1.append(u11)
-                self.U2.append(u21)
-                self.V1.append(v11)
-                self.V2.append(v21)
-                t0=t1
-                u10=u11
-                u20=u21
-                v10=v11
-                v20=v21
-            self.flagoverflow=0
-
-        except OverflowError:
-            messagebox.showerror("Erreur", "Calcul divergent: augmenter la résolution ou l'interval de temps")
-            self.flagoverflow=1
+        pas=(tn-t0)/n
+        T=[t0]
+        U1=[u10]
+        U2=[u20]
+        V1=[v10]
+        V2=[v20]
+        for k in range(n):
+            t1=t0+pas
+            u11=u10+pas*v10
+            u21=u20+pas*v20
+            v11=v10+pas*((-g*(2*m1+m2)*m.sin(u10)-m2*g*m.sin(u10-2*u20)-2*m2*m.sin(u10-u20)*(l2*(v20)**2+l1*(v10)**2*m.cos(u10-u20)))/(l1*(2*m1+m2-m2*m.cos(2*u10-2*u20))))
+            v21=v20+pas*(2*m.sin(u10-u20)*(l1*(m1+m2)*(v10)**2+g*(m1+m2)*m.cos(u10)+l2*m2*(v20)**2*m.cos(u10-u20))/(l2*(2*m1+m2-m2*m.cos(2*u10-2*u20))))
+            self.T.append(t1)
+            self.U1.append(u11)
+            self.U2.append(u21)
+            self.V1.append(v11)
+            self.V2.append(v21)
+            t0=t1
+            u10=u11
+            u20=u21
+            v10=v11
+            v20=v21
 
         self.COORD1=self.conversion(self.U1,100)
         self.COORD2=self.conversion(self.U2,100)
