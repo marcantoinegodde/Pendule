@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from tkinter import *
-from tkinter import ttk
+from tkinter import ttk, messagebox
 import tkinter.font as tkFont
 import tkinter
 import threading
@@ -34,6 +34,7 @@ class Pendule(object):
         self.V1=[]
         self.V2=[]
 
+        self.flagoverflow=0
 
     def home(self):
         "Fenêtre de configuration"
@@ -200,28 +201,34 @@ class Pendule(object):
     def resolution(self,t0,tn,u10,u20,v10,v20,m1,m2,l1,l2,g,n):
         "Méthode permettant la résolution des équations différentielles (Euler explicite)"
 
-        pas=(tn-t0)/n
-        T=[t0]
-        U1=[u10]
-        U2=[u20]
-        V1=[v10]
-        V2=[v20]
-        for k in range(n):
-            t1=t0+pas
-            u11=u10+pas*v10
-            u21=u20+pas*v20
-            v11=v10+pas*((-g*(2*m1+m2)*m.sin(u10)-m2*g*m.sin(u10-2*u20)-2*m2*m.sin(u10-u20)*(l2*(v20)**2+l1*(v10)**2*m.cos(u10-u20)))/(l1*(2*m1+m2-m2*m.cos(2*u10-2*u20))))
-            v21=v20+pas*(2*m.sin(u10-u20)*(l1*(m1+m2)*(v10)**2+g*(m1+m2)*m.cos(u10)+l2*m2*(v20)**2*m.cos(u10-u20))/(l2*(2*m1+m2-m2*m.cos(2*u10-2*u20))))
-            self.T.append(t1)
-            self.U1.append(u11)
-            self.U2.append(u21)
-            self.V1.append(v11)
-            self.V2.append(v21)
-            t0=t1
-            u10=u11
-            u20=u21
-            v10=v11
-            v20=v21
+        try:
+            pas=(tn-t0)/n
+            T=[t0]
+            U1=[u10]
+            U2=[u20]
+            V1=[v10]
+            V2=[v20]
+            for k in range(n):
+                t1=t0+pas
+                u11=u10+pas*v10
+                u21=u20+pas*v20
+                v11=v10+pas*((-g*(2*m1+m2)*m.sin(u10)-m2*g*m.sin(u10-2*u20)-2*m2*m.sin(u10-u20)*(l2*(v20)**2+l1*(v10)**2*m.cos(u10-u20)))/(l1*(2*m1+m2-m2*m.cos(2*u10-2*u20))))
+                v21=v20+pas*(2*m.sin(u10-u20)*(l1*(m1+m2)*(v10)**2+g*(m1+m2)*m.cos(u10)+l2*m2*(v20)**2*m.cos(u10-u20))/(l2*(2*m1+m2-m2*m.cos(2*u10-2*u20))))
+                self.T.append(t1)
+                self.U1.append(u11)
+                self.U2.append(u21)
+                self.V1.append(v11)
+                self.V2.append(v21)
+                t0=t1
+                u10=u11
+                u20=u21
+                v10=v11
+                v20=v21
+            self.flagoverflow=0
+
+        except OverflowError:
+            messagebox.showerror("Erreur", "Calcul divergent: augmenter la résolution ou l'interval de temps")
+            self.flagoverflow=1
 
         self.COORD1=self.conversion(self.U1,100)
         self.COORD2=self.conversion(self.U2,100)
@@ -271,6 +278,8 @@ class Pendule(object):
         "Double commande démarrage"
 
         self.settings() #Récupérations des paramètres
+        if self.flag==1:
+            return
         self.periode=int(((self.tn-self.t0)/self.n)*1E3) #Définition d'une période constante
         self.bouton_start.config(state=DISABLED) #Désactivation de l'interface
         self.bouton_reset.config(state=DISABLED)
@@ -298,18 +307,24 @@ class Pendule(object):
     def settings(self):
         "Récupération des paramètres"
 
-        self.t0=int(self.t0_ent.get())
-        self.tn=int(self.tn_ent.get())
-        self.u10=float(self.u10_ent.get())
-        self.u20=float(self.u20_ent.get())
-        self.v10=float(self.v10_ent.get())
-        self.v20=float(self.v20_ent.get())
-        self.m1=float(self.m1_ent.get())
-        self.m2=float(self.m2_ent.get())
-        self.l1=float(self.l1_ent.get())
-        self.l2=float(self.l2_ent.get())
-        self.g=float(self.g_ent.get())
-        self.n=int(self.n_ent.get())
+        try:
+            self.t0=int(self.t0_ent.get())
+            self.tn=int(self.tn_ent.get())
+            self.u10=float(self.u10_ent.get())
+            self.u20=float(self.u20_ent.get())
+            self.v10=float(self.v10_ent.get())
+            self.v20=float(self.v20_ent.get())
+            self.m1=float(self.m1_ent.get())
+            self.m2=float(self.m2_ent.get())
+            self.l1=float(self.l1_ent.get())
+            self.l2=float(self.l2_ent.get())
+            self.g=float(self.g_ent.get())
+            self.n=int(self.n_ent.get())
+            self.flag=0
+
+        except ValueError:
+            messagebox.showerror("Erreur", "Les paramètres doivent être des valeurs numériques")
+            self.flag=1
 
  
     def reset(self):
